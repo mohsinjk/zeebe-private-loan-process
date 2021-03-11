@@ -46,8 +46,12 @@
       <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
       <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing" />
-    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-digital-signing" />
+    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=dicision=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-digital-signing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=dicision=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-isk-activation-event-message">
     <bpmn:extensionElements>
