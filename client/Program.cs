@@ -12,7 +12,7 @@ namespace Client1
     internal class Program
     {
         private static readonly string ZeebeUrl = "127.0.0.1:26500";
-        private static readonly string ProcessId = "create-isk-process";
+        private static readonly string ProcessId = "create-privateloan-process";
 
         public static async Task Main(string[] args)
         {
@@ -28,7 +28,7 @@ namespace Client1
                 .UsePlainText()
                 .Build();
 
-            string variables = "{\"customer_id\": \"" + args[0] + "\",\"monthly_saving\": 500,\"source_account_id\": \"87fd78b4-de0e-4899-ba02-a1aee2f5a47b\",\"funds\": [{\"fund_id\": \"ABC Emerging Marketsfond\",\"allocation\": 50},{\"fund_id\": \"ABC Asienfond ex-Japan\",\"allocation\": 25},{\"fund_id\": \"ABC Sverige Småbolag\",\"allocation\": 25}]}";
+            string variables = "{\"customerId\": \"" + args[0] + "\",\"loanAmount\": 50000,\"customerName\": \"ABC XYZ\"}";
 
             Console.WriteLine("Starting workflow with id: " + args[0]);
 

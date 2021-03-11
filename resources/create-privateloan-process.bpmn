@@ -31,22 +31,22 @@
       <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
       <bpmn:outgoing>Flow_1egw89f</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="create-manually-signing" name="Manually signing">
+    <bpmn:serviceTask id="create-manual-signing" name="Manual signing">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="create-manually-signing" />
+        <zeebe:taskDefinition type="create-manual-signing" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0t09qxs</bpmn:incoming>
       <bpmn:outgoing>Flow_1kvyoky</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="create-dicision" targetRef="parallel-split" />
     <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="process-end" />
-    <bpmn:sequenceFlow id="Flow_1kvyoky" sourceRef="create-manually-signing" targetRef="process-end" />
+    <bpmn:sequenceFlow id="Flow_1kvyoky" sourceRef="create-manual-signing" targetRef="process-end" />
     <bpmn:exclusiveGateway id="parallel-split">
       <bpmn:incoming>Flow_1q8aeg4</bpmn:incoming>
       <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
       <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manually-signing" />
+    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing" />
     <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-digital-signing" />
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-isk-activation-event-message">
@@ -112,7 +112,7 @@
       <bpmndi:BPMNShape id="Activity_02o54b0_di" bpmnElement="create-digital-signing">
         <dc:Bounds x="850" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02gl7vj_di" bpmnElement="create-manually-signing">
+      <bpmndi:BPMNShape id="Activity_02gl7vj_di" bpmnElement="create-manual-signing">
         <dc:Bounds x="850" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_192r882_di" bpmnElement="parallel-split" isMarkerVisible="true">

@@ -19,21 +19,21 @@ namespace Worker5
         private static readonly string WorkerName = Environment.MachineName;
         private static bool test = false;
 
-        #pragma warning disable 1998
+#pragma warning disable 1998
         public static async Task Main(string[] args)
         {
             if (Environment.GetEnvironmentVariable("ZEEBE_WORKER_MODE") != null)
                 test = Environment.GetEnvironmentVariable("ZEEBE_WORKER_MODE") == "test";
             else
                 if (args.Length == 0)
-                {
-                    Console.WriteLine("Enter a parameter (test or normal) or ...");
-                    Console.WriteLine("Set the environment variable ZEEBE_WORKER_MODE to either 'test' or 'normal'.");
+            {
+                Console.WriteLine("Enter a parameter (test or normal) or ...");
+                Console.WriteLine("Set the environment variable ZEEBE_WORKER_MODE to either 'test' or 'normal'.");
 
-                    return;
-                }
-                else
-                    test = (args[0] == "test");
+                return;
+            }
+            else
+                test = (args[0] == "test");
 
             var client = ZeebeClient.Builder()
                 .UseLoggerFactory(new NLogLoggerFactory())
@@ -53,33 +53,33 @@ namespace Worker5
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 5 with job type '{0}' is running in {1} mode.", JobType, test?"test":"normal");
+                Console.WriteLine("Worker 3 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
             }
         }
-        
+
         private static void HandleJob(IJobClient jobClient, IJob job)
         {
             // business logic
             var jobKey = job.Key;
             Console.WriteLine("Handling job: " + job);
-            
+
             Thread.Sleep(3000);
 
-            if (!test || job.Retries == 1) 
+            if (!test || job.Retries == 1)
             {
-                Console.WriteLine("Worker 5 completes job successfully.");
+                Console.WriteLine("Worker 3 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"monthly_saving_done\":true}")
+                    .Variables("{\"create-digital-signing\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
-            } 
-            else 
+            }
+            else
             {
-                Console.WriteLine("Worker 5 failing with message: {0}", "Backend system not available");
+                Console.WriteLine("Worker 3 failing with message: {0}", "Backend system not available");
                 jobClient.NewFailCommand(jobKey)
                     .Retries(job.Retries - 1)
                     .ErrorMessage("Backend system not available.")

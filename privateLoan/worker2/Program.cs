@@ -16,21 +16,21 @@ namespace Worker2
         private static readonly string WorkerName = Environment.MachineName;
         private static bool test = false;
 
-        #pragma warning disable 1998
+#pragma warning disable 1998
         public static async Task Main(string[] args)
         {
             if (Environment.GetEnvironmentVariable("ZEEBE_WORKER_MODE") != null)
                 test = Environment.GetEnvironmentVariable("ZEEBE_WORKER_MODE") == "test";
             else
                 if (args.Length == 0)
-                {
-                    Console.WriteLine("Enter a parameter (test or normal) or ...");
-                    Console.WriteLine("Set the environment variable ZEEBE_WORKER_MODE to either 'test' or 'normal'.");
+            {
+                Console.WriteLine("Enter a parameter (test or normal) or ...");
+                Console.WriteLine("Set the environment variable ZEEBE_WORKER_MODE to either 'test' or 'normal'.");
 
-                    return;
-                }
-                else
-                    test = (args[0] == "test");
+                return;
+            }
+            else
+                test = (args[0] == "test");
 
             var client = ZeebeClient.Builder()
                 .UseLoggerFactory(new NLogLoggerFactory())
@@ -51,7 +51,7 @@ namespace Worker2
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 2 with job type '{0}' is running in {1} mode.", JobType, test?"test":"normal");
+                Console.WriteLine("Worker 2 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
@@ -65,16 +65,16 @@ namespace Worker2
 
             Thread.Sleep(3000);
 
-            if (!test) 
+            if (!test)
             {
                 Console.WriteLine("Worker 2 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"isk_activated_done\":true}")
+                    .Variables("{\"dicision\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
-            } 
-            else 
+            }
+            else
             {
                 Console.WriteLine("Worker 2 failing with message: {0}", "Activation Fault Message");
                 jobClient.NewThrowErrorCommand(jobKey)
@@ -84,6 +84,6 @@ namespace Worker2
                     .GetAwaiter()
                     .GetResult();
             }
-         }
+        }
     }
 }

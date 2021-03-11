@@ -10,13 +10,12 @@ using Zeebe.Client.Api.Worker;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Worker1
+namespace Worker5
 {
     internal class Program
     {
-        //private static readonly string ZeebeUrl = "host.docker.internal:26500";
         private static readonly string ZeebeUrl = "127.0.0.1:26500";
-        private static readonly string JobType = "create-loan-application";
+        private static readonly string JobType = "create-manual-signing";
         private static readonly string WorkerName = Environment.MachineName;
         private static bool test = false;
 
@@ -54,7 +53,7 @@ namespace Worker1
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 1 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
+                Console.WriteLine("Worker 4 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
@@ -65,22 +64,22 @@ namespace Worker1
         {
             // business logic
             var jobKey = job.Key;
-            Console.WriteLine("Worker 1 handling job: " + job);
+            Console.WriteLine("Handling job: " + job);
 
             Thread.Sleep(3000);
 
-            if (!test)
+            if (!test || job.Retries == 1)
             {
-                Console.WriteLine("Worker 1 completes job successfully.");
+                Console.WriteLine("Worker 4 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"applicationId\":\"" + Guid.NewGuid() + "\"}")
+                    .Variables("{\"create-manual-signing\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
             }
             else
             {
-                Console.WriteLine("Worker failing with message: {0}", "Backend system not available");
+                Console.WriteLine("Worker 4 failing with message: {0}", "Backend system not available");
                 jobClient.NewFailCommand(jobKey)
                     .Retries(job.Retries - 1)
                     .ErrorMessage("Backend system not available.")
