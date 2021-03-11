@@ -1,0 +1,54 @@
+version: "3.3"
+
+services:
+  worker1:
+    env_file:
+      - .env    
+    image: worker1:latest
+    build:
+      context: ${ZEEBE_WORKER_LOCATION}\worker1\
+      dockerfile: ${ZEEBE_WORKER_LOCATION}\worker1\Dockerfile
+    environment:
+      - ZEEBE_WORKER_MODE="normal"
+    network_mode: "host"
+  worker2:
+    env_file:
+      - .env    
+    image: worker2:latest
+    build:
+      context: ${ZEEBE_WORKER_LOCATION}\worker2\
+      dockerfile: ${ZEEBE_WORKER_LOCATION}\worker2\Dockerfile
+    environment:
+      - ZEEBE_WORKER_MODE="normal"
+    network_mode: "host"
+  worker3:
+    env_file:
+      - .env    
+    image: worker3:latest
+    build:
+      context: ${ZEEBE_WORKER_LOCATION}\worker3\
+      dockerfile: ${ZEEBE_WORKER_LOCATION}\worker3\Dockerfile
+    environment:
+      - ZEEBE_WORKER_MODE="normal"
+    network_mode: "host"
+  worker4:
+    env_file:
+      - .env    
+    image: worker4:latest
+    build:
+      context: ${ZEEBE_WORKER_LOCATION}\worker4\
+      dockerfile: ${ZEEBE_WORKER_LOCATION}\worker4\Dockerfile
+    environment:
+      - ZEEBE_WORKER_MODE="normal"
+    network_mode: "host"
+  worker5:
+    env_file:
+      - .env    
+    image: worker5:latest
+    build:
+      context: ${ZEEBE_WORKER_LOCATION}\worker5\
+      dockerfile: ${ZEEBE_WORKER_LOCATION}\worker5\Dockerfile
+    environment:
+      - ZEEBE_WORKER_MODE="normal"
+    network_mode: "host"
+   

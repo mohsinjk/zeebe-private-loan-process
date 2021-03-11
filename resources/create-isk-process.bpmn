@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_065o7o2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.9.1">
+  <bpmn:process id="create-isk-process" name="Create ISK Process" isExecutable="true">
+    <bpmn:startEvent id="create-isk-account-start" name="Create ISK Account Start">
+      <bpmn:outgoing>Flow_0rmzlkq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0rmzlkq" sourceRef="create-isk-account-start" targetRef="create-isk-account" />
+    <bpmn:sequenceFlow id="Flow_0emr1bx" sourceRef="create-isk-account" targetRef="activate-isk-account" />
+    <bpmn:sequenceFlow id="Flow_0sjr1ub" sourceRef="receive-isk-activation-event" targetRef="is-activated-gateway-join" />
+    <bpmn:parallelGateway id="parallel-split" name="Parallel Split">
+      <bpmn:incoming>Flow_1r3i6ic</bpmn:incoming>
+      <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-fund-allocation" />
+    <bpmn:sequenceFlow id="Flow_1ap5s24" sourceRef="create-fund-allocation" targetRef="create-monthly-saving" />
+    <bpmn:sequenceFlow id="Flow_0gefbv0" sourceRef="create-monthly-saving" targetRef="parallel-join" />
+    <bpmn:parallelGateway id="parallel-join" name="Parallel Join">
+      <bpmn:incoming>Flow_0gefbv0</bpmn:incoming>
+      <bpmn:incoming>Flow_1v0d9ia</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ws68i5</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="create-isk-account-end" name="Create ISK Account End">
+      <bpmn:incoming>Flow_1ws68i5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ws68i5" sourceRef="parallel-join" targetRef="create-isk-account-end" />
+    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-recurring-transfer" />
+    <bpmn:sequenceFlow id="Flow_1v0d9ia" sourceRef="create-recurring-transfer" targetRef="parallel-join" />
+    <bpmn:intermediateCatchEvent id="receive-isk-activation-event" name="Receive ISK Activation Event">
+      <bpmn:incoming>Flow_182etis</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sjr1ub</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0str39e" messageRef="Message_1ql8gru" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_182etis" sourceRef="activate-isk-account-manually" targetRef="receive-isk-activation-event" />
+    <bpmn:exclusiveGateway id="is-activated-gateway-join" name="Exclusive Join">
+      <bpmn:incoming>Flow_0sjr1ub</bpmn:incoming>
+      <bpmn:incoming>Flow_1q8aeg4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r3i6ic</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1r3i6ic" sourceRef="is-activated-gateway-join" targetRef="parallel-split" />
+    <bpmn:serviceTask id="activate-isk-account-manually" name="Activate ISK Account">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="activate-isk-account-manually" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="kafka-topic" value="isk-activation-request-events" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1f4sm4e</bpmn:incoming>
+      <bpmn:outgoing>Flow_182etis</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="activate-isk-account" name="Activate ISK Account">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="activate-isk-account" retries="2" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0emr1bx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q8aeg4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-isk-account" name="Create ISK Account">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-isk-account" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rmzlkq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0emr1bx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-fund-allocation" name="Create Fund Allocation">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-fund-allocation" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ap5s24</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-monthly-saving" name="Create Monthly Saving">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-monthly-saving" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ap5s24</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gefbv0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-recurring-transfer" name="Create Recurring Transfer">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-recurring-transfer" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0t09qxs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v0d9ia</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="activate-isk-account" targetRef="is-activated-gateway-join" />
+    <bpmn:boundaryEvent id="activation-fault-event" name="Activation Fault Event" attachedToRef="activate-isk-account">
+      <bpmn:outgoing>Flow_1f4sm4e</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0pw922j" errorRef="activation-fault-event-" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1f4sm4e" sourceRef="activation-fault-event" targetRef="activate-isk-account-manually" />
+  </bpmn:process>
+  <bpmn:message id="Message_1ql8gru" name="receive-isk-activation-event-message">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=customer_id" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-isk-process">
+      <bpmndi:BPMNEdge id="Flow_1f4sm4e_di" bpmnElement="Flow_1f4sm4e">
+        <di:waypoint x="500" y="338" />
+        <di:waypoint x="500" y="440" />
+        <di:waypoint x="590" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q8aeg4_di" bpmnElement="Flow_1q8aeg4">
+        <di:waypoint x="550" y="280" />
+        <di:waypoint x="855" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r3i6ic_di" bpmnElement="Flow_1r3i6ic">
+        <di:waypoint x="905" y="280" />
+        <di:waypoint x="1015" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_182etis_di" bpmnElement="Flow_182etis">
+        <di:waypoint x="690" y="440" />
+        <di:waypoint x="772" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v0d9ia_di" bpmnElement="Flow_1v0d9ia">
+        <di:waypoint x="1240" y="440" />
+        <di:waypoint x="1460" y="440" />
+        <di:waypoint x="1460" y="305" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t09qxs_di" bpmnElement="Flow_0t09qxs">
+        <di:waypoint x="1040" y="305" />
+        <di:waypoint x="1040" y="440" />
+        <di:waypoint x="1140" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ws68i5_di" bpmnElement="Flow_1ws68i5">
+        <di:waypoint x="1485" y="280" />
+        <di:waypoint x="1572" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gefbv0_di" bpmnElement="Flow_0gefbv0">
+        <di:waypoint x="1380" y="120" />
+        <di:waypoint x="1460" y="120" />
+        <di:waypoint x="1460" y="255" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ap5s24_di" bpmnElement="Flow_1ap5s24">
+        <di:waypoint x="1230" y="120" />
+        <di:waypoint x="1280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01lgqo7_di" bpmnElement="Flow_01lgqo7">
+        <di:waypoint x="1040" y="255" />
+        <di:waypoint x="1040" y="120" />
+        <di:waypoint x="1130" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sjr1ub_di" bpmnElement="Flow_0sjr1ub">
+        <di:waypoint x="808" y="440" />
+        <di:waypoint x="880" y="440" />
+        <di:waypoint x="880" y="305" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0emr1bx_di" bpmnElement="Flow_0emr1bx">
+        <di:waypoint x="380" y="280" />
+        <di:waypoint x="450" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rmzlkq_di" bpmnElement="Flow_0rmzlkq">
+        <di:waypoint x="208" y="280" />
+        <di:waypoint x="280" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="create-isk-account-start">
+        <dc:Bounds x="172" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="305" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16xqvqv_di" bpmnElement="parallel-split">
+        <dc:Bounds x="1015" y="255" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1089" y="270" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rqhgtu_di" bpmnElement="parallel-join">
+        <dc:Bounds x="1435" y="255" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1351" y="270" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h0idog_di" bpmnElement="create-isk-account-end">
+        <dc:Bounds x="1572" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1561" y="305" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fejnam_di" bpmnElement="receive-isk-activation-event">
+        <dc:Bounds x="772" y="422" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="750" y="465" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0tv0d47_di" bpmnElement="is-activated-gateway-join" isMarkerVisible="true">
+        <dc:Bounds x="855" y="255" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="846" y="225" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wql7bc_di" bpmnElement="activate-isk-account-manually">
+        <dc:Bounds x="590" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ke0kk_di" bpmnElement="activate-isk-account">
+        <dc:Bounds x="450" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1os3qdu_di" bpmnElement="create-isk-account">
+        <dc:Bounds x="280" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02o54b0_di" bpmnElement="create-fund-allocation">
+        <dc:Bounds x="1130" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qn0zos_di" bpmnElement="create-monthly-saving">
+        <dc:Bounds x="1280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02gl7vj_di" bpmnElement="create-recurring-transfer">
+        <dc:Bounds x="1140" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bl1xnk_di" bpmnElement="activation-fault-event">
+        <dc:Bounds x="482" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="512" y="345" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
