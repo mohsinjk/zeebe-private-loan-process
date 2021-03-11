@@ -17,14 +17,14 @@ namespace Simulate
         private static readonly string ProcessId = "create-isk-process-pt";
 
         public static async Task Main(string[] args)
-        {            
+        {
             var client = ZeebeClient.Builder()
                 .UseLoggerFactory(new NLogLoggerFactory())
                 .UseGatewayAddress(ZeebeUrl)
                 .UsePlainText()
                 .Build();
 
-            for (int i=0;i<Int32.Parse(args[0]);i++)
+            for (int i = 0; i < Int32.Parse(args[0]); i++)
             {
                 string variables = GeneratePayload(i);
 
@@ -37,7 +37,7 @@ namespace Simulate
                     .Variables(variables)
                     .Send();
 
-                Console.WriteLine("Number of requests is {0} of {1}", i+1, args[0]);
+                Console.WriteLine("Number of requests is {0} of {1}", i + 1, args[0]);
 
                 Thread.Sleep(Int32.Parse(args[1]));
             }
@@ -64,36 +64,36 @@ namespace Simulate
             payload.source_account_id = Guid.NewGuid();
             payload.funds = new JArray();
 
-            string[] funds1 = {"SEB Asienfond ex-Japan", 
-                "SEB Etisk Global Indexfond C USD - Lux", 
-                "SEB Emerging Marketsfond", 
-                "SEB Dynamisk Aktiefond",
-                "SEB Europafond Småbolag"};
+            string[] funds1 = {"ABC Asienfond ex-Japan",
+                "ABC Etisk Global Indexfond C USD - Lux",
+                "ABC Emerging Marketsfond",
+                "ABC Dynamisk Aktiefond",
+                "ABC Europafond Småbolag"};
 
-            string[] funds2 = {"SEB Asienfond ex-Kina", 
-                "SEB Etisk Global Indexfond A USD - Lux", 
-                "SEB Global Marketsfond", 
-                "SEB Dynamisk Småbolagsfond",
-                "SEB Sverige Småbolag"};
+            string[] funds2 = {"ABC Asienfond ex-Kina",
+                "ABC Etisk Global Indexfond A USD - Lux",
+                "ABC Global Marketsfond",
+                "ABC Dynamisk Småbolagsfond",
+                "ABC Sverige Småbolag"};
 
-            string[] funds3 = {"SEB Asienfond ex-Asien", 
-                "SEB Etisk Global Indexfond C EUR - Lux", 
-                "SEB Bluff Marketsfond", 
-                "SEB Statisk Aktiefond",
-                "SEB Norden Småbolag"};
-            
+            string[] funds3 = {"ABC Asienfond ex-Asien",
+                "ABC Etisk Global Indexfond C EUR - Lux",
+                "ABC Bluff Marketsfond",
+                "ABC Statisk Aktiefond",
+                "ABC Norden Småbolag"};
+
             dynamic fund1 = new JObject();
-            fund1.fund_id = funds1[rnd.Next(1, 100)%5];
+            fund1.fund_id = funds1[rnd.Next(1, 100) % 5];
             fund1.allocation = 50;
             payload.funds.Add(fund1);
 
             dynamic fund2 = new JObject();
-            fund2.fund_id = funds2[rnd.Next(1, 100)%5];
+            fund2.fund_id = funds2[rnd.Next(1, 100) % 5];
             fund2.allocation = 25;
             payload.funds.Add(fund2);
 
             dynamic fund3 = new JObject();
-            fund3.fund_id = funds3[rnd.Next(1, 100)%5];
+            fund3.fund_id = funds3[rnd.Next(1, 100) % 5];
             fund3.allocation = 25;
             payload.funds.Add(fund3);
 
