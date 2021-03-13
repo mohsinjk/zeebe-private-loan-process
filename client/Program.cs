@@ -28,9 +28,9 @@ namespace Client1
                 .UsePlainText()
                 .Build();
 
-            string variables = "{\"customerId\": \"" + args[0] + "\",\"loanAmount\": 50000,\"customerName\": \"ABC XYZ\"}";
+            string variables = "{\"customerId\": \"" + args[0] + "\",\"loanAmount\": " + args[1] + ",\"customerName\": \"ABC XYZ\"}";
 
-            Console.WriteLine("Starting workflow with id: " + args[0]);
+            Console.WriteLine($"Starting workflow with id: " + args[0]);
 
             await client
                 .NewCreateWorkflowInstanceCommand()
