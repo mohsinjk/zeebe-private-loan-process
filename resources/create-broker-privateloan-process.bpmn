@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_065o7o2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.11.0">
+  <bpmn:process id="create-broker-privateloan-process" name="Create Broker Private Loan Process" isExecutable="true">
+    <bpmn:startEvent id="process-start" name="Start">
+      <bpmn:outgoing>Flow_0rmzlkq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0rmzlkq" sourceRef="process-start" targetRef="create-loan-application" />
+    <bpmn:sequenceFlow id="Flow_0emr1bx" sourceRef="create-loan-application" targetRef="create-dicision" />
+    <bpmn:endEvent id="process-end" name="End">
+      <bpmn:incoming>Flow_1v2l16i</bpmn:incoming>
+      <bpmn:incoming>Flow_15b40xn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="create-dicision" name="Create Dicision">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-dicision" retries="2" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0emr1bx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q8aeg4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-loan-application" name="Create Loan Application">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-loan-application" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rmzlkq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0emr1bx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-digital-signing" name="Digital signing">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-digital-signing" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1egw89f</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="create-dicision" targetRef="Activity_0i7opyf" />
+    <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="Activity_0595w7p" />
+    <bpmn:exclusiveGateway id="parallel-split" name="digital or manual">
+      <bpmn:incoming>Flow_0oo291r</bpmn:incoming>
+      <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15b40xn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_01lgqo7" name="accepted" sourceRef="parallel-split" targetRef="create-digital-signing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offer="accepted"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0595w7p" name="Create Disburse loan">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-disburse-loan" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1egw89f</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v2l16i</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="Activity_0595w7p" targetRef="process-end" />
+    <bpmn:serviceTask id="Activity_0i7opyf" name="Send offer">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-offer" retries="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1q8aeg4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oo291r</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0oo291r" sourceRef="Activity_0i7opyf" targetRef="parallel-split" />
+    <bpmn:sequenceFlow id="Flow_15b40xn" name="rejected" sourceRef="parallel-split" targetRef="process-end">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offer="rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_1ql8gru" name="receive-isk-activation-event-message">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=customer_id" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-broker-privateloan-process">
+      <bpmndi:BPMNEdge id="Flow_1v2l16i_di" bpmnElement="Flow_1v2l16i">
+        <di:waypoint x="1220" y="120" />
+        <di:waypoint x="1490" y="120" />
+        <di:waypoint x="1490" y="262" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01lgqo7_di" bpmnElement="Flow_01lgqo7">
+        <di:waypoint x="750" y="255" />
+        <di:waypoint x="750" y="120" />
+        <di:waypoint x="850" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="767" y="185" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1egw89f_di" bpmnElement="Flow_1egw89f">
+        <di:waypoint x="950" y="120" />
+        <di:waypoint x="1120" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q8aeg4_di" bpmnElement="Flow_1q8aeg4">
+        <di:waypoint x="520" y="280" />
+        <di:waypoint x="560" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0emr1bx_di" bpmnElement="Flow_0emr1bx">
+        <di:waypoint x="380" y="280" />
+        <di:waypoint x="420" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rmzlkq_di" bpmnElement="Flow_0rmzlkq">
+        <di:waypoint x="208" y="280" />
+        <di:waypoint x="280" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oo291r_di" bpmnElement="Flow_0oo291r">
+        <di:waypoint x="660" y="280" />
+        <di:waypoint x="725" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15b40xn_di" bpmnElement="Flow_15b40xn">
+        <di:waypoint x="775" y="280" />
+        <di:waypoint x="1472" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1104" y="262" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="process-start">
+        <dc:Bounds x="172" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="180" y="305" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h0idog_di" bpmnElement="process-end">
+        <dc:Bounds x="1472" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1482" y="305" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1os3qdu_di" bpmnElement="create-loan-application">
+        <dc:Bounds x="280" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02o54b0_di" bpmnElement="create-digital-signing">
+        <dc:Bounds x="850" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_192r882_di" bpmnElement="parallel-split" isMarkerVisible="true">
+        <dc:Bounds x="725" y="255" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="709" y="315" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ke0kk_di" bpmnElement="create-dicision">
+        <dc:Bounds x="420" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="Activity_0595w7p">
+        <dc:Bounds x="1120" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i7opyf_di" bpmnElement="Activity_0i7opyf">
+        <dc:Bounds x="560" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
