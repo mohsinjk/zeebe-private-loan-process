@@ -38,8 +38,8 @@
       <bpmn:outgoing>Flow_1kvyoky</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="create-dicision" targetRef="parallel-split" />
-    <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="Activity_0595w7p" />
-    <bpmn:sequenceFlow id="Flow_1kvyoky" sourceRef="create-manual-signing" targetRef="Activity_0595w7p" />
+    <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="create-disburse-loan" />
+    <bpmn:sequenceFlow id="Flow_1kvyoky" sourceRef="create-manual-signing" targetRef="create-disburse-loan" />
     <bpmn:exclusiveGateway id="parallel-split" name="digital or manual">
       <bpmn:incoming>Flow_1q8aeg4</bpmn:incoming>
       <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
@@ -51,7 +51,7 @@
     <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-digital-signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&lt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0595w7p" name="Create Disburse loan">
+    <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse loan">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-disburse-loan" />
       </bpmn:extensionElements>
@@ -59,7 +59,7 @@
       <bpmn:incoming>Flow_1kvyoky</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2l16i</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="Activity_0595w7p" targetRef="process-end" />
+    <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="create-disburse-loan" targetRef="process-end" />
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-isk-activation-event-message">
     <bpmn:extensionElements>
@@ -69,6 +69,10 @@
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-privateloan-process">
+      <bpmndi:BPMNEdge id="Flow_1v2l16i_di" bpmnElement="Flow_1v2l16i">
+        <di:waypoint x="1440" y="280" />
+        <di:waypoint x="1472" y="280" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01lgqo7_di" bpmnElement="Flow_01lgqo7">
         <di:waypoint x="750" y="255" />
         <di:waypoint x="750" y="120" />
@@ -103,10 +107,6 @@
         <di:waypoint x="208" y="280" />
         <di:waypoint x="280" y="280" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1v2l16i_di" bpmnElement="Flow_1v2l16i">
-        <di:waypoint x="1440" y="280" />
-        <di:waypoint x="1472" y="280" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="process-start">
         <dc:Bounds x="172" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -137,7 +137,7 @@
           <dc:Bounds x="790" y="270" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="Activity_0595w7p">
+      <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="create-disburse-loan">
         <dc:Bounds x="1340" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

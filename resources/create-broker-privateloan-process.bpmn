@@ -31,8 +31,8 @@
       <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
       <bpmn:outgoing>Flow_1egw89f</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="create-dicision" targetRef="Activity_0i7opyf" />
-    <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="Activity_0595w7p" />
+    <bpmn:sequenceFlow id="Flow_1q8aeg4" sourceRef="create-dicision" targetRef="send-offer" />
+    <bpmn:sequenceFlow id="Flow_1egw89f" sourceRef="create-digital-signing" targetRef="create-disburse-loan" />
     <bpmn:exclusiveGateway id="parallel-split" name="digital or manual">
       <bpmn:incoming>Flow_0oo291r</bpmn:incoming>
       <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
@@ -41,22 +41,22 @@
     <bpmn:sequenceFlow id="Flow_01lgqo7" name="accepted" sourceRef="parallel-split" targetRef="create-digital-signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offer="accepted"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0595w7p" name="Create Disburse loan">
+    <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse loan">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-disburse-loan" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1egw89f</bpmn:incoming>
       <bpmn:outgoing>Flow_1v2l16i</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="Activity_0595w7p" targetRef="process-end" />
-    <bpmn:serviceTask id="Activity_0i7opyf" name="Send offer">
+    <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="create-disburse-loan" targetRef="process-end" />
+    <bpmn:serviceTask id="send-offer" name="Send offer">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="send-offer" retries="" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1q8aeg4</bpmn:incoming>
       <bpmn:outgoing>Flow_0oo291r</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0oo291r" sourceRef="Activity_0i7opyf" targetRef="parallel-split" />
+    <bpmn:sequenceFlow id="Flow_0oo291r" sourceRef="send-offer" targetRef="parallel-split" />
     <bpmn:sequenceFlow id="Flow_15b40xn" name="rejected" sourceRef="parallel-split" targetRef="process-end">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=offer="rejected"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -69,6 +69,17 @@
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-broker-privateloan-process">
+      <bpmndi:BPMNEdge id="Flow_15b40xn_di" bpmnElement="Flow_15b40xn">
+        <di:waypoint x="775" y="280" />
+        <di:waypoint x="1472" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1104" y="262" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oo291r_di" bpmnElement="Flow_0oo291r">
+        <di:waypoint x="660" y="280" />
+        <di:waypoint x="725" y="280" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v2l16i_di" bpmnElement="Flow_1v2l16i">
         <di:waypoint x="1220" y="120" />
         <di:waypoint x="1490" y="120" />
@@ -98,17 +109,6 @@
         <di:waypoint x="208" y="280" />
         <di:waypoint x="280" y="280" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0oo291r_di" bpmnElement="Flow_0oo291r">
-        <di:waypoint x="660" y="280" />
-        <di:waypoint x="725" y="280" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15b40xn_di" bpmnElement="Flow_15b40xn">
-        <di:waypoint x="775" y="280" />
-        <di:waypoint x="1472" y="280" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1104" y="262" width="40" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="process-start">
         <dc:Bounds x="172" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -120,6 +120,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1482" y="305" width="20" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05ke0kk_di" bpmnElement="create-dicision">
+        <dc:Bounds x="420" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1os3qdu_di" bpmnElement="create-loan-application">
         <dc:Bounds x="280" y="240" width="100" height="80" />
@@ -133,13 +136,10 @@
           <dc:Bounds x="709" y="315" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_05ke0kk_di" bpmnElement="create-dicision">
-        <dc:Bounds x="420" y="240" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="Activity_0595w7p">
+      <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="create-disburse-loan">
         <dc:Bounds x="1120" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0i7opyf_di" bpmnElement="Activity_0i7opyf">
+      <bpmndi:BPMNShape id="Activity_0i7opyf_di" bpmnElement="send-offer">
         <dc:Bounds x="560" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
