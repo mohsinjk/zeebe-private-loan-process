@@ -72,7 +72,7 @@ namespace Worker5
             {
                 Console.WriteLine("Worker 5 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"disbursed loan amount\":true}")
+                    .Variables("{\"disbursedLoanAmount\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();

@@ -72,7 +72,7 @@ namespace Worker5
             {
                 Console.WriteLine("Worker 3 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"create-digital-signing\":true}")
+                    .Variables("{\"signingMode\":\"digital\"}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();

@@ -7,18 +7,19 @@ using Zeebe.Client;
 using Zeebe.Client.Api.Responses;
 using Zeebe.Client.Api.Worker;
 
-namespace Client1
+namespace Worker2
 {
     internal class Program
     {
+
         private static readonly string ZeebeUrl = "127.0.0.1:26500";
-        private static readonly string ProcessId = "create-privateloan-process";
+        private static readonly string MessageName = "receive-signing-event-message";
 
         public static async Task Main(string[] args)
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Please enter a numeric value as parameter.");
+                Console.WriteLine("Please enter a numeric argument.");
                 return;
             }
 
@@ -28,16 +29,14 @@ namespace Client1
                 .UsePlainText()
                 .Build();
 
-            string variables = "{\"customerId\": \"" + args[0] + "\",\"loanAmount\": " + args[1] + ",\"noOfapplicant\": " + args[2] + "}";
-
-            Console.WriteLine($"Starting workflow with id: " + args[0]);
-
             await client
-                .NewCreateWorkflowInstanceCommand()
-                .BpmnProcessId(ProcessId)
-                .LatestVersion()
-                .Variables(variables)
+                .NewPublishMessageCommand()
+                .MessageName(MessageName)
+                .CorrelationKey(args[0])
+                .Variables("{\"signingCompleted\":true}")
                 .Send();
+            
+            Console.WriteLine("Publish signing event message with correlation id: " + args[0]);
         }
     }
 }

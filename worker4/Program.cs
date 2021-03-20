@@ -75,7 +75,7 @@ namespace Worker5
             {
                 Console.WriteLine("Worker 4 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"create-manual-signing\":true}")
+                    .Variables("{\"signingMode\":\"manual\"}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
