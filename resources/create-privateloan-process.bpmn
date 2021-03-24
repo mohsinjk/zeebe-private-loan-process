@@ -23,14 +23,14 @@
       <bpmn:incoming>Flow_0rmzlkq</bpmn:incoming>
       <bpmn:outgoing>Flow_0emr1bx</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="create-digital-signing" name="Digital signing">
+    <bpmn:serviceTask id="create-digital-signing" name="Create Digital Signing">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-digital-signing" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
+      <bpmn:incoming>Flow_1ajck93</bpmn:incoming>
       <bpmn:outgoing>Flow_1egw89f</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="create-manual-signing" name="Manual signing">
+    <bpmn:serviceTask id="create-manual-signing" name="Manual Signing">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-manual-signing" />
       </bpmn:extensionElements>
@@ -48,10 +48,10 @@
     <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&gt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-digital-signing">
+    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-promissory-note">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&lt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse loan">
+    <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse Loan">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-disburse-loan" />
       </bpmn:extensionElements>
@@ -59,15 +59,36 @@
       <bpmn:outgoing>Flow_1v2l16i</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="create-disburse-loan" targetRef="process-end" />
-    <bpmn:receiveTask id="receive-signing" name="Receive signing" messageRef="Message_1ql8gru">
+    <bpmn:receiveTask id="receive-signing" name="Receive Signing" messageRef="Message_1ql8gru">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-digital-signing" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1egw89f</bpmn:incoming>
       <bpmn:incoming>Flow_1kvyoky</bpmn:incoming>
       <bpmn:outgoing>Flow_1b5a0bs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19nww1f</bpmn:outgoing>
     </bpmn:receiveTask>
     <bpmn:sequenceFlow id="Flow_1b5a0bs" sourceRef="receive-signing" targetRef="create-disburse-loan" />
+    <bpmn:serviceTask id="create-promissory-note" name="Create Promissory Note">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-promissory-note" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01lgqo7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ajck93</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1ajck93" sourceRef="create-promissory-note" targetRef="create-digital-signing" />
+    <bpmn:serviceTask id="Activity_0h77ptm" name="Create Kafka Data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-dicision" retries="2" />
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="create-kafka-data" name="Create Kafka Data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-kafka-data" retries="2" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_19nww1f</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_19nww1f" sourceRef="receive-signing" targetRef="create-kafka-data" />
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-signing-event-message">
     <bpmn:extensionElements>
@@ -77,9 +98,13 @@
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-privateloan-process">
+      <bpmndi:BPMNEdge id="Flow_1b5a0bs_di" bpmnElement="Flow_1b5a0bs">
+        <di:waypoint x="1310" y="280" />
+        <di:waypoint x="1370" y="280" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1v2l16i_di" bpmnElement="Flow_1v2l16i">
-        <di:waypoint x="1260" y="280" />
-        <di:waypoint x="1342" y="280" />
+        <di:waypoint x="1470" y="280" />
+        <di:waypoint x="1532" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_01lgqo7_di" bpmnElement="Flow_01lgqo7">
         <di:waypoint x="660" y="255" />
@@ -93,15 +118,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kvyoky_di" bpmnElement="Flow_1kvyoky">
         <di:waypoint x="840" y="440" />
-        <di:waypoint x="940" y="440" />
-        <di:waypoint x="940" y="280" />
-        <di:waypoint x="1010" y="280" />
+        <di:waypoint x="1110" y="440" />
+        <di:waypoint x="1110" y="280" />
+        <di:waypoint x="1210" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1egw89f_di" bpmnElement="Flow_1egw89f">
-        <di:waypoint x="840" y="120" />
-        <di:waypoint x="940" y="120" />
-        <di:waypoint x="940" y="280" />
-        <di:waypoint x="1010" y="280" />
+        <di:waypoint x="1050" y="120" />
+        <di:waypoint x="1110" y="120" />
+        <di:waypoint x="1110" y="280" />
+        <di:waypoint x="1210" y="280" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1q8aeg4_di" bpmnElement="Flow_1q8aeg4">
         <di:waypoint x="550" y="280" />
@@ -115,9 +140,13 @@
         <di:waypoint x="208" y="280" />
         <di:waypoint x="280" y="280" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1b5a0bs_di" bpmnElement="Flow_1b5a0bs">
-        <di:waypoint x="1110" y="280" />
-        <di:waypoint x="1160" y="280" />
+      <bpmndi:BPMNEdge id="Flow_1ajck93_di" bpmnElement="Flow_1ajck93">
+        <di:waypoint x="840" y="120" />
+        <di:waypoint x="950" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19nww1f_di" bpmnElement="Flow_19nww1f">
+        <di:waypoint x="1260" y="320" />
+        <di:waypoint x="1260" y="520" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="process-start">
         <dc:Bounds x="172" y="262" width="36" height="36" />
@@ -131,29 +160,38 @@
       <bpmndi:BPMNShape id="Activity_1os3qdu_di" bpmnElement="create-loan-application">
         <dc:Bounds x="280" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02gl7vj_di" bpmnElement="create-manual-signing">
+        <dc:Bounds x="740" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_192r882_di" bpmnElement="parallel-split" isMarkerVisible="true">
         <dc:Bounds x="635" y="255" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="700" y="270" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02o54b0_di" bpmnElement="create-digital-signing">
-        <dc:Bounds x="740" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02gl7vj_di" bpmnElement="create-manual-signing">
-        <dc:Bounds x="740" y="400" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ad6ygl_di" bpmnElement="receive-signing">
-        <dc:Bounds x="1010" y="240" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_1h0idog_di" bpmnElement="process-end">
+        <dc:Bounds x="1532" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1542" y="305" width="20" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="create-disburse-loan">
-        <dc:Bounds x="1160" y="240" width="100" height="80" />
+        <dc:Bounds x="1370" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1h0idog_di" bpmnElement="process-end">
-        <dc:Bounds x="1342" y="262" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1352" y="305" width="20" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Activity_1ad6ygl_di" bpmnElement="receive-signing">
+        <dc:Bounds x="1210" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02o54b0_di" bpmnElement="create-digital-signing">
+        <dc:Bounds x="950" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1f82rfq_di" bpmnElement="create-promissory-note">
+        <dc:Bounds x="740" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l0fuk0_di" bpmnElement="create-kafka-data">
+        <dc:Bounds x="1210" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0h77ptm_di" bpmnElement="Activity_0h77ptm">
+        <dc:Bounds x="450" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

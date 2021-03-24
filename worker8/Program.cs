@@ -1,21 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLog.Extensions.Logging;
 using Zeebe.Client;
 using Zeebe.Client.Api.Responses;
 using Zeebe.Client.Api.Worker;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Worker5
+namespace Worker2
 {
     internal class Program
     {
         private static readonly string ZeebeUrl = "127.0.0.1:26500";
-        private static readonly string JobType = "send-offer";
+        private static readonly string JobType = "create-promissory-note";
         private static readonly string WorkerName = Environment.MachineName;
         private static bool test = false;
 
@@ -49,43 +46,40 @@ namespace Worker5
                       .Handler(HandleJob)
                       .MaxJobsActive(5)
                       .Name(WorkerName)
+                      .AutoCompletion()
                       .PollInterval(TimeSpan.FromSeconds(1))
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 6 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
+                Console.WriteLine("Worker 8 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
             }
         }
-
         private static void HandleJob(IJobClient jobClient, IJob job)
         {
             // business logic
             var jobKey = job.Key;
-            //Console.WriteLine("Handling job: " + job);
-
-            Console.WriteLine("... Reponse from broker ...");
-            var response = Console.ReadLine();
+            Console.WriteLine("Worker 8 handling job: " + job);
 
             Thread.Sleep(3000);
 
-            if (!test || job.Retries == 1)
+            if (!test)
             {
-                Console.WriteLine("Worker 6 completes job successfully.");
+                Console.WriteLine("Worker 8 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"offer\":\"" + response + "\"}")
+                    .Variables("{\"promissory-note\":\"A6221ds.xml\"}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
             }
             else
             {
-                Console.WriteLine("Worker 6 failing with message: {0}", "Backend system not available");
-                jobClient.NewFailCommand(jobKey)
-                    .Retries(job.Retries - 1)
-                    .ErrorMessage("Backend system not available.")
+                Console.WriteLine("Worker 8 failing with message: {0}", "Activation Fault Message");
+                jobClient.NewThrowErrorCommand(jobKey)
+                    .ErrorCode("Activation Fault")
+                    .ErrorMessage("Activation Fault Message")
                     .Send()
                     .GetAwaiter()
                     .GetResult();

@@ -64,9 +64,9 @@ namespace Worker5
         {
             // business logic
             var jobKey = job.Key;
-            Console.WriteLine("Handling job: " + job);
+            //Console.WriteLine("Handling job: " + job);
 
-            Console.WriteLine("... Aapplicaiton check ...");
+            Console.WriteLine("... Application manual check ...");
             Console.ReadLine();
 
             Thread.Sleep(3000);
@@ -75,7 +75,7 @@ namespace Worker5
             {
                 Console.WriteLine("Worker 4 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"signingMode\":\"manual\"}")
+                    .Variables("{\"isManualCheck\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
