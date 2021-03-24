@@ -36,7 +36,7 @@ namespace Worker2
                 .Variables("{\"signingCompleted\":\"" + args[0] + "\"}")
                 .Send();
             
-            Console.WriteLine("Publish signing event message with correlation id: " + args[0]);
+            Console.WriteLine("Publish offer response event message with correlation id: " + args[0]);
         }
     }
 }

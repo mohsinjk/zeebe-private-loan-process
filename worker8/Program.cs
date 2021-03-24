@@ -47,7 +47,7 @@ namespace Worker2
         private static void HandleJob(IJobClient jobClient, IJob job)
         {
             // business logic
-            Console.WriteLine("Worker 8 handling job: " + job);
+            Console.WriteLine("... create-kafka-data ...");
 
         }
     }
