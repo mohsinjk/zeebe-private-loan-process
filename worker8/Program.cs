@@ -38,7 +38,7 @@ namespace Worker2
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 9 with job type '{0}' is running in {1} mode.", JobType,  "normal");
+                Console.WriteLine("Worker 8 with job type '{0}' is running in {1} mode.", JobType,  "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
@@ -47,7 +47,7 @@ namespace Worker2
         private static void HandleJob(IJobClient jobClient, IJob job)
         {
             // business logic
-            Console.WriteLine("Worker 9 handling job: " + job);
+            Console.WriteLine("Worker 8 handling job: " + job);
 
         }
     }

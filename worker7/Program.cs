@@ -51,7 +51,7 @@ namespace Worker2
                       .Timeout(TimeSpan.FromMinutes(10))
                       .Open();
 
-                Console.WriteLine("Worker 8 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
+                Console.WriteLine("Worker 7 with job type '{0}' is running in {1} mode.", JobType, test ? "test" : "normal");
 
                 // blocks main thread, so that worker can run
                 signal.WaitOne();
@@ -61,13 +61,13 @@ namespace Worker2
         {
             // business logic
             var jobKey = job.Key;
-            Console.WriteLine("Worker 8 handling job: " + job);
+            Console.WriteLine("Worker 7 handling job: " + job);
 
             Thread.Sleep(3000);
 
             if (!test)
             {
-                Console.WriteLine("Worker 8 completes job successfully.");
+                Console.WriteLine("Worker 7 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
                     .Variables("{\"promissory-note\":\"A6221ds.xml\"}")
                     .Send()
@@ -76,7 +76,7 @@ namespace Worker2
             }
             else
             {
-                Console.WriteLine("Worker 8 failing with message: {0}", "Activation Fault Message");
+                Console.WriteLine("Worker 7 failing with message: {0}", "Activation Fault Message");
                 jobClient.NewThrowErrorCommand(jobKey)
                     .ErrorCode("Activation Fault")
                     .ErrorMessage("Activation Fault Message")

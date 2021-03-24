@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_065o7o2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.11.0">
-  <bpmn:process id="create-privateloan-process" name="Create Private Loan Process" isExecutable="true">
+  <bpmn:process id="create-broker-privateloan-process" name="Create Broker Private Loan Process" isExecutable="true">
     <bpmn:startEvent id="process-start" name="Start">
       <bpmn:outgoing>Flow_0rmzlkq</bpmn:outgoing>
     </bpmn:startEvent>
@@ -106,14 +106,14 @@
       <zeebe:subscription correlationKey="=customerId" />
     </bpmn:extensionElements>
   </bpmn:message>
-   <bpmn:message id="Message_12j7erf" name="receive-offer-response-event-message">
+  <bpmn:message id="Message_12j7erf" name="receive-offer-response-event-message">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=customerId" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-privateloan-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="create-broker-privateloan-process">
       <bpmndi:BPMNEdge id="Flow_1sh5nsl_di" bpmnElement="Flow_1sh5nsl">
         <di:waypoint x="870" y="280" />
         <di:waypoint x="955" y="280" />
