@@ -64,10 +64,8 @@ namespace Worker5
         {
             // business logic
             var jobKey = job.Key;
-            //Console.WriteLine("Handling job: " + job);
+            Console.WriteLine("Handling job: " + job);
 
-            Console.WriteLine("... Reponse from broker ...");
-            var response = Console.ReadLine();
 
             Thread.Sleep(3000);
 
@@ -75,7 +73,7 @@ namespace Worker5
             {
                 Console.WriteLine("Worker 6 completes job successfully.");
                 jobClient.NewCompleteJobCommand(jobKey)
-                    .Variables("{\"offer\":\"" + response + "\"}")
+                    .Variables("{\"isSendOffer\":true}")
                     .Send()
                     .GetAwaiter()
                     .GetResult();

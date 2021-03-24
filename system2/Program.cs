@@ -7,18 +7,19 @@ using Zeebe.Client;
 using Zeebe.Client.Api.Responses;
 using Zeebe.Client.Api.Worker;
 
-namespace System1
+namespace Worker2
 {
     internal class Program
     {
+
         private static readonly string ZeebeUrl = "127.0.0.1:26500";
-        private static readonly string MessageName = "receive-isk-activation-event-message";
+        private static readonly string MessageName = "receive-offer-response-event-message";
 
         public static async Task Main(string[] args)
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Please enter a numeric argument.");
+                Console.WriteLine("Please enter a offer response.");
                 return;
             }
 
@@ -32,9 +33,10 @@ namespace System1
                 .NewPublishMessageCommand()
                 .MessageName(MessageName)
                 .CorrelationKey(args[0])
+                .Variables("{\"signingCompleted\":\"" + args[0] + "\"}")
                 .Send();
             
-            Console.WriteLine("Sending activation event message with correlation id: " + args[0]);
+            Console.WriteLine("Publish signing event message with correlation id: " + args[0]);
         }
     }
 }

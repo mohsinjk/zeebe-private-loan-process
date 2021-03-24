@@ -200,7 +200,7 @@ To stop the containers and clean the persistent data:
 
 ## Findings
 
-- Not possible to same worker mulitple time in a process.
+- Not possible to use same worker mulitple time in a process.
 - Can't pause workflow partially by worker execution.
 
 [back to toc](#table-of-content)
