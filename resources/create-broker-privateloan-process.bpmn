@@ -45,10 +45,10 @@
       <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
       <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing">
+    <bpmn:sequenceFlow id="Flow_0t09qxs" name="=loanAmount&#62;100000" sourceRef="parallel-split" targetRef="create-manual-signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&gt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-promissory-note">
+    <bpmn:sequenceFlow id="Flow_01lgqo7" name="=loanAmount&#62;100000" sourceRef="parallel-split" targetRef="create-promissory-note">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&lt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse Loan">
@@ -103,12 +103,12 @@
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-signing-event-message">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=customerId" />
+      <zeebe:subscription correlationKey="=&#34;b-&#34;+customerId" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:message id="Message_12j7erf" name="receive-offer-response-event-message">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=customerId" />
+      <zeebe:subscription correlationKey="=&#34;b-&#34;+customerId" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
@@ -142,11 +142,17 @@
         <di:waypoint x="980" y="255" />
         <di:waypoint x="980" y="120" />
         <di:waypoint x="1060" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="998" y="185" width="84" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0t09qxs_di" bpmnElement="Flow_0t09qxs">
         <di:waypoint x="980" y="305" />
         <di:waypoint x="980" y="440" />
         <di:waypoint x="1060" y="440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="998" y="346" width="84" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kvyoky_di" bpmnElement="Flow_1kvyoky">
         <di:waypoint x="1160" y="440" />

@@ -45,10 +45,10 @@
       <bpmn:outgoing>Flow_0t09qxs</bpmn:outgoing>
       <bpmn:outgoing>Flow_01lgqo7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0t09qxs" sourceRef="parallel-split" targetRef="create-manual-signing">
+    <bpmn:sequenceFlow id="Flow_0t09qxs" name="=loanAmount&#62;100000" sourceRef="parallel-split" targetRef="create-manual-signing">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&gt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_01lgqo7" sourceRef="parallel-split" targetRef="create-promissory-note">
+    <bpmn:sequenceFlow id="Flow_01lgqo7" name="=loanAmount&#60;100000" sourceRef="parallel-split" targetRef="create-promissory-note">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=loanAmount&lt;100000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="create-disburse-loan" name="Create Disburse Loan">
@@ -59,15 +59,6 @@
       <bpmn:outgoing>Flow_1v2l16i</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1v2l16i" sourceRef="create-disburse-loan" targetRef="process-end" />
-    <bpmn:receiveTask id="receive-signing" name="Receive Signing" messageRef="Message_1ql8gru">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="create-digital-signing" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1egw89f</bpmn:incoming>
-      <bpmn:incoming>Flow_1kvyoky</bpmn:incoming>
-      <bpmn:outgoing>Flow_1b5a0bs</bpmn:outgoing>
-      <bpmn:outgoing>Flow_19nww1f</bpmn:outgoing>
-    </bpmn:receiveTask>
     <bpmn:sequenceFlow id="Flow_1b5a0bs" sourceRef="receive-signing" targetRef="create-disburse-loan" />
     <bpmn:serviceTask id="create-promissory-note" name="Create Promissory Note">
       <bpmn:extensionElements>
@@ -84,10 +75,19 @@
       <bpmn:incoming>Flow_19nww1f</bpmn:incoming>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_19nww1f" sourceRef="receive-signing" targetRef="create-kafka-data" />
+    <bpmn:receiveTask id="receive-signing" name="Receive Signing" messageRef="Message_1ql8gru">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-digital-signing" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1kvyoky</bpmn:incoming>
+      <bpmn:incoming>Flow_1egw89f</bpmn:incoming>
+      <bpmn:outgoing>Flow_19nww1f</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1b5a0bs</bpmn:outgoing>
+    </bpmn:receiveTask>
   </bpmn:process>
   <bpmn:message id="Message_1ql8gru" name="receive-signing-event-message">
     <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=customerId" />
+      <zeebe:subscription correlationKey="=&#34;p-&#34;+customerId" />
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:error id="activation-fault-event-" name="Activation Fault" errorCode="Activation Fault" />
@@ -113,11 +113,17 @@
         <di:waypoint x="660" y="255" />
         <di:waypoint x="660" y="120" />
         <di:waypoint x="740" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="678" y="196" width="84" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0t09qxs_di" bpmnElement="Flow_0t09qxs">
         <di:waypoint x="660" y="305" />
         <di:waypoint x="660" y="440" />
         <di:waypoint x="740" y="440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="678" y="336" width="84" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1kvyoky_di" bpmnElement="Flow_1kvyoky">
         <di:waypoint x="840" y="440" />
@@ -170,7 +176,7 @@
       <bpmndi:BPMNShape id="Gateway_192r882_di" bpmnElement="parallel-split" isMarkerVisible="true">
         <dc:Bounds x="635" y="255" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="700" y="270" width="82" height="14" />
+          <dc:Bounds x="699" y="270" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0595w7p_di" bpmnElement="create-disburse-loan">
