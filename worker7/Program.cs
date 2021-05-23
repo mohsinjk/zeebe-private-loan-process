@@ -77,9 +77,9 @@ namespace Worker2
             else
             {
                 Console.WriteLine("Worker 7 failing with message: {0}", "Activation Fault Message");
-                jobClient.NewThrowErrorCommand(jobKey)
-                    .ErrorCode("Activation Fault")
-                    .ErrorMessage("Activation Fault Message")
+                jobClient.NewFailCommand(jobKey)
+                    .Retries(job.Retries - 1)
+                    .ErrorMessage("Backend system not available.")
                     .Send()
                     .GetAwaiter()
                     .GetResult();
